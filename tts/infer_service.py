@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import os
 from tts.infer_cli import MegaTTS3DiTInfer
+import hashlib
 
 app = Flask(__name__)
 
@@ -28,7 +29,8 @@ def process():
 
         # 保存结果文件
         os.makedirs(output_dir, exist_ok=True)
-        output_file = os.path.join(output_dir, f'[P]{input_text[:20]}.wav')
+        filename = hashlib.md5(input_text.encode()).hexdigest()
+        output_file = os.path.join(output_dir, f'[P]{filename}.wav')
         with open(output_file, 'wb') as f:
             f.write(wav_bytes)
 

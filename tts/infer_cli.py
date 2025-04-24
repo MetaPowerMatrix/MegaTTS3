@@ -18,6 +18,7 @@ import argparse
 import librosa
 import numpy as np
 import torch
+import hashlib
 
 from tn.chinese.normalizer import Normalizer as ZhNormalizer
 from tn.english.normalizer import Normalizer as EnNormalizer
@@ -273,6 +274,9 @@ if __name__ == '__main__':
     resource_context = infer_ins.preprocess(file_content, latent_file=wav_path.replace('.wav', '.npy'))
     wav_bytes = infer_ins.forward(resource_context, input_text, time_step=time_step, p_w=p_w, t_w=t_w)
 
-    print(f"| Saving results to {out_path}/[P]{input_text[:20]}.wav")
+    # input_text的md5作为保存的文件名
+    filename = hashlib.md5(input_text.encode()).hexdigest()
+    print(f"| Saving results to {out_path}/[p]{filename}.wav")
     os.makedirs(out_path, exist_ok=True)
-    save_wav(wav_bytes, f'{out_path}/[P]{input_text[:20]}.wav')
+    save_wav(wav_bytes, f'{out_path}/[p]{filename}.wav')
+    
